@@ -1,7 +1,7 @@
 
 
 from flask import Flask, render_template, jsonify, request
-from scanner_final import CompletNetworkScanner
+from scanner import CompletNetworkScanner
 import threading
 import time
 from datetime import datetime
@@ -79,7 +79,7 @@ def scan_background():
 @app.route('/')
 def index():
     """Page principale"""
-    return render_template('dashboard_final.html')
+    return render_template('dashboard.html')
 
 @app.route('/api/network-data')
 def get_network_data():
@@ -130,7 +130,7 @@ def scan_now():
                 'message': 'Un scan est deja en cours'
             })
         
-        print("\n🔄 SCAN MANUEL DEMARRE\n")
+        print("\n SCAN MANUEL DEMARRE\n")
         
         result = scanner.get_full_network_info()
         
@@ -199,10 +199,9 @@ if __name__ == '__main__':
     ✅ Identification ports dangereux
     ✅ Dashboard moderne et responsive
     
-    🌐 Serveur: http://0.0.0.0:5000
-    🔍 Auto-scan: Toutes les 60 secondes
-    🔐 Security: Actif
-    📊 Logging: Actif
+     Serveur: http://0.0.0.0:5000
+     Auto-scan: Toutes les 60 secondes
+     
     
     >>> Appuyez sur Ctrl+C pour arreter <<<
     """)

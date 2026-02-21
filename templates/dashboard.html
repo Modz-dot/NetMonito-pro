@@ -527,7 +527,7 @@
     <div class="container">
         <div class="header">
             <div class="header-content">
-                <div class="logo">⚡ NETVISION PRO</div>
+                <div class="logo"> NETVISION PRO</div>
                 <div class="tagline">Advanced Network Monitoring & Security</div>
 
                 <div class="stats-grid">
@@ -558,10 +558,10 @@
                 </div>
 
                 <div class="controls">
-                    <button class="btn" onclick="scanNow()">🔍 SCAN</button>
-                    <button class="btn btn-secondary" onclick="showTab('active')">💻 Actives</button>
-                    <button class="btn btn-secondary" onclick="showTab('offline')">🔴 Hors Ligne</button>
-                    <button class="btn btn-secondary" onclick="showTab('alerts')">⚠️ Alertes</button>
+                    <button class="btn" onclick="scanNow()"> SCAN</button>
+                    <button class="btn btn-secondary" onclick="showTab('active')"> Actives</button>
+                    <button class="btn btn-secondary" onclick="showTab('offline')"> Hors Ligne</button>
+                    <button class="btn btn-secondary" onclick="showTab('alerts')"> Alertes</button>
                 </div>
 
                 <div style="margin-top: 15px; color: #aaa; font-size: 14px;">
@@ -571,7 +571,7 @@
         </div>
 
         <div id="alerts-panel" class="alerts-panel hidden">
-            <h2 style="color: #ff6b6b; margin-bottom: 15px;">🚨 Alertes Réseau</h2>
+            <h2 style="color: #ff6b6b; margin-bottom: 15px;"> Alertes Réseau</h2>
             <div id="alerts-list"></div>
         </div>
 
@@ -656,7 +656,7 @@
                         <div class="host-header">
                             <div class="host-ip">${host.ip}</div>
                             <div class="status-badge status-${isOffline ? 'offline' : isNew ? 'new' : 'active'}">
-                                ${isOffline ? '🔴 OFFLINE' : isNew ? '✨ NEW' : '● ONLINE'}
+                                ${isOffline ? '🔴 OFFLINE' : isNew ? ' NEW' : '● ONLINE'}
                             </div>
                         </div>
                         
@@ -693,7 +693,7 @@
                         
                         ${!isOffline && host.security && host.security.risks.length > 0 ? `
                             <div class="risks-section">
-                                <div class="ports-title">⚠️ Risques Détectés</div>
+                                <div class="ports-title"> Risques Détectés</div>
                                 ${host.security.risks.map(risk => `
                                     <div class="risk-item">
                                         <span class="risk-level risk-${risk.level}">${risk.level.toUpperCase()}</span>
