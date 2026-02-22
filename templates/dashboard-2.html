@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NetVision Pro - Network Monitor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f7fa;
+            color: #2c3e50;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: #ffffff;
+            border-bottom: 1px solid #e1e8ed;
+            padding: 20px 40px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-section h1 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 4px;
+        }
+
+        .logo-section p {
+            font-size: 13px;
+            color: #7f8c8d;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .last-scan {
+            font-size: 13px;
+            color: #7f8c8d;
+            margin-right: 16px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+
+        .btn-secondary {
+            background: #ecf0f1;
+            color: #2c3e50;
+        }
+
+        .btn-secondary:hover {
+            background: #d5dbdb;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px 40px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 24px;
+            border-radius: 8px;
+            border: 1px solid #e1e8ed;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: #7f8c8d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .stat-change {
+            font-size: 12px;
+            margin-top: 6px;
+        }
+
+        .stat-change.positive {
+            color: #27ae60;
+        }
+
+        .stat-change.negative {
+            color: #e74c3c;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e1e8ed;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            background: none;
+            border: none;
+            font-size: 14px;
+            font-weight: 500;
+            color: #7f8c8d;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+            margin-bottom: -2px;
+        }
+
+        .tab:hover {
+            color: #2c3e50;
+        }
+
+        .tab.active {
+            color: #3498db;
+            border-bottom-color: #3498db;
+        }
+
+        .content-section {
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e1e8ed;
+            overflow: hidden;
+        }
+
+        .section-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid #e1e8ed;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .filter-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .filter-btn {
+            padding: 6px 12px;
+            font-size: 12px;
+            border: 1px solid #e1e8ed;
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-btn:hover {
+            background: #f8f9fa;
+        }
+
+        .filter-btn.active {
+            background: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #f8f9fa;
+        }
+
+        th {
+            text-align: left;
+            padding: 14px 24px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #7f8c8d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #e1e8ed;
+        }
+
+        td {
+            padding: 16px 24px;
+            border-bottom: 1px solid #f1f3f5;
+            font-size: 14px;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-online {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-offline {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-new {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .security-score {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .score-badge {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .score-excellent {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .score-good {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .score-moderate {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .score-poor {
+            background: #f5c6cb;
+            color: #721c24;
+        }
+
+        .ports-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .port-tag {
+            padding: 3px 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            font-size: 12px;
+            color: #495057;
+        }
+
+        .port-tag.danger {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .risk-badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .risk-critical {
+            background: #721c24;
+            color: white;
+        }
+
+        .risk-high {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .risk-medium {
+            background: #f39c12;
+            color: white;
+        }
+
+        .alerts-section {
+            margin-bottom: 30px;
+        }
+
+        .alert-item {
+            padding: 14px 20px;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            border-left: 4px solid;
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            border-color: #17a2b8;
+            color: #0c5460;
+        }
+
+        .alert-warning {
+            background: #fff3cd;
+            border-color: #ffc107;
+            color: #856404;
+        }
+
+        .alert-critical {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        .alert-time {
+            font-size: 12px;
+            color: #6c757d;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #7f8c8d;
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.3;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: #7f8c8d;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .hostname {
+            font-weight: 500;
+            color: #2c3e50;
+        }
+
+        .ip-address {
+            color: #7f8c8d;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .header-content {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+
+            table {
+                font-size: 13px;
+            }
+
+            th,
+            td {
+                padding: 12px 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="logo-section">
+                <h1>NetVision Pro</h1>
+                <p>Network Monitoring & Security</p>
+            </div>
+            <div class="header-actions">
+                <span class="last-scan">Dernier scan: <strong id="last-scan">--:--</strong></span>
+                <button class="btn btn-secondary" onclick="exportData()">
+                    Exporter
+                </button>
+                <button class="btn btn-primary" onclick="scanNow()">
+                    Actualiser
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Machines Actives</div>
+                <div class="stat-value" id="active-count">0</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Hors Ligne</div>
+                <div class="stat-value" id="offline-count">0</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Nouvelles Machines</div>
+                <div class="stat-value" id="new-count">0</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Total Ports</div>
+                <div class="stat-value" id="total-ports">0</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Score Sécurité</div>
+                <div class="stat-value" id="security-score">0</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Alertes Actives</div>
+                <div class="stat-value" id="alerts-count">0</div>
+            </div>
+        </div>
+
+        <div id="alerts-section" class="alerts-section hidden">
+            <div class="content-section">
+                <div class="section-header">
+                    <h2 class="section-title">Alertes Récentes</h2>
+                    <button class="btn btn-secondary" style="font-size: 13px; padding: 6px 14px;"
+                        onclick="clearAlerts()">
+                        Effacer tout
+                    </button>
+                </div>
+                <div style="padding: 20px;" id="alerts-list"></div>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('active')">Machines Actives</button>
+            <button class="tab" onclick="showTab('offline')">Hors Ligne</button>
+            <button class="tab" onclick="showTab('alerts')">Alertes</button>
+        </div>
+
+        <div class="content-section">
+            <div class="section-header">
+                <h2 class="section-title" id="section-title">Machines Actives</h2>
+                <div class="filter-controls">
+                    <button class="filter-btn active" onclick="filterBy('all')">Toutes</button>
+                    <button class="filter-btn" onclick="filterBy('risks')">Avec Risques</button>
+                    <button class="filter-btn" onclick="filterBy('secure')">Sécurisées</button>
+                </div>
+            </div>
+
+            <div id="content-container">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Chargement des données réseau...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentTab = 'active';
+        let currentFilter = 'all';
+        let networkData = null;
+
+        function loadNetworkData() {
+            fetch('/api/network-data')
+                .then(response => response.json())
+                .then(data => {
+                    networkData = data;
+                    updateStats(data);
+                    displayContent(data);
+                })
+                .catch(error => {
+                    console.error('Erreur:', error);
+                    document.getElementById('content-container').innerHTML =
+                        '<div class="empty-state"><div class="empty-state-icon">⚠️</div><p>Erreur de chargement des données</p></div>';
+                });
+        }
+
+        function updateStats(data) {
+            document.getElementById('active-count').textContent = data.active_hosts.length;
+            document.getElementById('offline-count').textContent = data.offline_hosts.length;
+            document.getElementById('new-count').textContent = data.new_devices.length;
+            document.getElementById('total-ports').textContent = data.network_summary.total_ports || 0;
+            document.getElementById('security-score').textContent = data.network_summary.avg_security_score || 0;
+            document.getElementById('alerts-count').textContent = data.alerts.length;
+
+            if (data.last_scan) {
+                const time = data.last_scan.split(' ')[1];
+                document.getElementById('last-scan').textContent = time;
+            }
+
+            // Afficher/masquer les alertes
+            const alertsSection = document.getElementById('alerts-section');
+            if (data.alerts.length > 0 && currentTab !== 'alerts') {
+                alertsSection.classList.remove('hidden');
+                displayAlerts(data.alerts.slice(0, 3)); // 3 dernières alertes
+            } else {
+                alertsSection.classList.add('hidden');
+            }
+        }
+
+        function displayAlerts(alerts) {
+            const alertsList = document.getElementById('alerts-list');
+
+            if (alerts.length === 0) {
+                alertsList.innerHTML = '<div class="empty-state"><p>Aucune alerte</p></div>';
+                return;
+            }
+
+            alertsList.innerHTML = alerts.map(alert => `
+                <div class="alert-item alert-${alert.severity}">
+                    <div>
+                        <strong>${alert.type.replace(/_/g, ' ')}</strong><br>
+                        ${alert.message}
+                    </div>
+                    <div class="alert-time">${new Date(alert.timestamp).toLocaleTimeString()}</div>
+                </div>
+            `).join('');
+        }
+
+        function displayContent(data) {
+            const container = document.getElementById('content-container');
+
+            if (currentTab === 'alerts') {
+                displayAllAlerts(data.alerts);
+                return;
+            }
+
+            let hosts = currentTab === 'active' ? data.active_hosts : data.offline_hosts;
+
+            // Appliquer le filtre
+            if (currentFilter === 'risks' && currentTab === 'active') {
+                hosts = hosts.filter(h => h.security && h.security.risks.length > 0);
+            } else if (currentFilter === 'secure' && currentTab === 'active') {
+                hosts = hosts.filter(h => h.security && h.security.score >= 80);
+            }
+
+            if (hosts.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📭</div>
+                        <p>Aucune machine ${currentTab === 'active' ? 'active' : 'hors ligne'}</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const isOffline = currentTab === 'offline';
+
+            let html = '<table><thead><tr>';
+            html += '<th>Machine</th>';
+            html += '<th>Status</th>';
+            if (!isOffline) {
+                html += '<th>Sécurité</th>';
+                html += '<th>Ports Ouverts</th>';
+                html += '<th>Risques</th>';
+            } else {
+                html += '<th>Hors ligne depuis</th>';
+                html += '<th>Dernière vue</th>';
+            }
+            html += '</tr></thead><tbody>';
+
+            hosts.forEach(host => {
+                const isNew = data.new_devices.some(d => d.ip === host.ip);
+
+                html += '<tr>';
+
+                // Machine
+                html += `<td>
+                    <div class="hostname">${host.hostname}</div>
+                    <div class="ip-address">${host.ip}</div>
+                </td>`;
+
+                // Status
+                if (isOffline) {
+                    html += '<td><span class="status-badge status-offline">Hors ligne</span></td>';
+                } else {
+                    html += `<td><span class="status-badge ${isNew ? 'status-new' : 'status-online'}">
+                        ${isNew ? 'Nouvelle' : 'En ligne'}
+                    </span></td>`;
+                }
+
+                if (!isOffline) {
+                    // Sécurité
+                    const sec = host.security;
+                    let scoreClass = 'score-excellent';
+                    if (sec.score < 40) scoreClass = 'score-poor';
+                    else if (sec.score < 60) scoreClass = 'score-moderate';
+                    else if (sec.score < 80) scoreClass = 'score-good';
+
+                    html += `<td>
+                        <div class="security-score">
+                            <div class="score-badge ${scoreClass}">${sec.score}</div>
+                            <span>${sec.level}</span>
+                        </div>
+                    </td>`;
+
+                    // Ports
+                    html += '<td><div class="ports-list">';
+                    const dangerousPorts = [21, 23, 69, 135, 445, 3389, 6379, 27017];
+                    host.ports.slice(0, 6).forEach(port => {
+                        const isDanger = dangerousPorts.includes(port.port);
+                        html += `<span class="port-tag ${isDanger ? 'danger' : ''}">${port.port}</span>`;
+                    });
+                    if (host.ports.length > 6) {
+                        html += `<span class="port-tag">+${host.ports.length - 6}</span>`;
+                    }
+                    html += '</div></td>';
+
+                    // Risques
+                    html += '<td>';
+                    if (sec.risks.length > 0) {
+                        sec.risks.slice(0, 2).forEach(risk => {
+                            html += `<span class="risk-badge risk-${risk.level}">${risk.level}</span> `;
+                        });
+                        if (sec.risks.length > 2) {
+                            html += `<span style="font-size: 12px; color: #7f8c8d;">+${sec.risks.length - 2}</span>`;
+                        }
+                    } else {
+                        html += '<span style="color: #27ae60; font-size: 13px;">✓ Aucun</span>';
+                    }
+                    html += '</td>';
+                } else {
+                    // Durée hors ligne
+                    html += `<td>${host.offline_hours}h</td>`;
+                    html += `<td><span style="font-size: 13px; color: #7f8c8d;">${host.last_seen.split(' ')[1]}</span></td>`;
+                }
+
+                html += '</tr>';
+            });
+
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        function displayAllAlerts(alerts) {
+            const container = document.getElementById('content-container');
+
+            if (alerts.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">✓</div><p>Aucune alerte</p></div>';
+                return;
+            }
+
+            let html = '<div style="padding: 20px;">';
+            alerts.forEach(alert => {
+                html += `
+                    <div class="alert-item alert-${alert.severity}">
+                        <div>
+                            <strong>${alert.type.replace(/_/g, ' ')}</strong><br>
+                            ${alert.message}
+                        </div>
+                        <div class="alert-time">${new Date(alert.timestamp).toLocaleString()}</div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        function showTab(tab) {
+            currentTab = tab;
+
+            // Update tabs
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Update title
+            const titles = {
+                'active': 'Machines Actives',
+                'offline': 'Machines Hors Ligne',
+                'alerts': 'Alertes Système'
+            };
+            document.getElementById('section-title').textContent = titles[tab];
+
+            // Show/hide filters
+            const filterControls = document.querySelector('.filter-controls');
+            if (tab === 'active') {
+                filterControls.style.display = 'flex';
+            } else {
+                filterControls.style.display = 'none';
+            }
+
+            if (networkData) {
+                displayContent(networkData);
+            }
+        }
+
+        function filterBy(filter) {
+            currentFilter = filter;
+
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            if (networkData) {
+                displayContent(networkData);
+            }
+        }
+
+        function scanNow() {
+            document.getElementById('content-container').innerHTML =
+                '<div class="loading"><div class="spinner"></div><p>Scan en cours...</p></div>';
+
+            fetch('/api/scan-now')
+                .then(response => response.json())
+                .then(result => {
+                    if (result.status === 'success') {
+                        networkData = result.data;
+                        updateStats(result.data);
+                        displayContent(result.data);
+                    } else {
+                        alert('Erreur: ' + result.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Erreur:', error);
+                    alert('Erreur lors du scan');
+                });
+        }
+
+        function clearAlerts() {
+            fetch('/api/clear-alerts')
+                .then(() => loadNetworkData())
+                .catch(error => console.error('Erreur:', error));
+        }
+
+        function exportData() {
+            if (!networkData) return;
+
+            const dataStr = JSON.stringify(networkData, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `network-scan-${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+        }
+
+        // Init
+        loadNetworkData();
+        setInterval(loadNetworkData, 30000);
+    </script>
+</body>
+
+</html>
